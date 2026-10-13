@@ -71,6 +71,10 @@ fun AttendanceContent(
                     isSettingOffice = state.isSettingOffice,
                     isMapAvailable = isMapAvailable,
                     onSetOfficeLocation = actions.onSetOfficeLocation,
+                    // The map's location layer needs permission and location services on, exactly
+                    // when the range section is shown.
+                    showCurrentLocation = state.mainArea() == MainArea.Range,
+                    distanceToOfficeMeters = state.displayDistanceMeters,
                 )
                 MainArea(state, actions)
             }

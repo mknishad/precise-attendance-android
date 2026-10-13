@@ -30,13 +30,16 @@ private val PILL_LIFT = (-28).dp
 
 /**
  * The map area with the coordinate pill floating over it. [isMapAvailable] decides between the
- * real map and the placeholder; the pill is the same either way.
+ * real map and the placeholder; the pill is the same either way. [showCurrentLocation] only
+ * affects the real map, which then shows the user's position as well.
  */
 @Composable
 fun OfficeMap(
     office: OfficeLocation?,
     isMapAvailable: Boolean,
     modifier: Modifier = Modifier,
+    showCurrentLocation: Boolean = false,
+    distanceToOfficeMeters: Int? = null,
 ) {
     val mapDescription = stringResource(R.string.map_description)
     val mapModifier = Modifier
@@ -49,7 +52,11 @@ fun OfficeMap(
             .height(MAP_HEIGHT)
             .clip(MaterialTheme.shapes.medium),
     ) {
-        if (isMapAvailable) OfficeGoogleMap(office, mapModifier) else OfficeMapPlaceholder(mapModifier)
+        if (isMapAvailable) {
+            OfficeGoogleMap(office, mapModifier, showCurrentLocation, distanceToOfficeMeters)
+        } else {
+            OfficeMapPlaceholder(mapModifier)
+        }
         CoordinatePill(
             office = office,
             modifier = Modifier

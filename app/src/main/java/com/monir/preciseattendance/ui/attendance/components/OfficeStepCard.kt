@@ -30,10 +30,17 @@ fun OfficeStepCard(
     isMapAvailable: Boolean,
     onSetOfficeLocation: () -> Unit,
     modifier: Modifier = Modifier,
+    showCurrentLocation: Boolean = false,
+    distanceToOfficeMeters: Int? = null,
 ) {
     AttendanceCard(modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            OfficeMap(office = office, isMapAvailable = isMapAvailable)
+            OfficeMap(
+                office = office,
+                isMapAvailable = isMapAvailable,
+                showCurrentLocation = showCurrentLocation,
+                distanceToOfficeMeters = distanceToOfficeMeters,
+            )
             Text(
                 text = stringResource(R.string.step_office_body),
                 style = MaterialTheme.typography.bodyMedium,

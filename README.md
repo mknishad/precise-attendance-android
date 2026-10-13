@@ -16,7 +16,7 @@ This repository is **Task 1 (native Android, Jetpack Compose)** of the assessmen
 - **Re-validation on tap.** The tap does not trust what the screen showed. It takes a fresh fix and re-checks the office, window, accuracy and distance before recording anything.
 - **Permission and hardware states.** Not asked yet, denied, permanently denied, approximate-only location, location services off (with the system "turn on location" prompt), no fix yet, weak accuracy, location timeout, and storage failure each have their own message or card.
 - **Local persistence.** The office position (full double precision) and the last attendance time are stored with Jetpack DataStore. Nothing leaves the device and Android backup is disabled.
-- **Optional map.** With a Maps API key the office is shown on a non-interactive map with a marker and a 50 m circle. Without a key, or without Google Play services, a styled placeholder is shown and everything else works.
+- **Optional map.** With a Maps API key the office is shown on a non-interactive map with a marker and a 50 m circle. While permission is granted and location is on, the map's own blue dot shows your current position, and the camera zooms out in whole steps so the dot stays in view when you are further away. The dot comes from the Maps SDK and is a display aid only; it does not use the app's 30 m accuracy check. Without a key, or without Google Play services, a styled placeholder is shown and everything else works.
 - **Presentation.** Light and dark themes, a scrollable layout that holds up at 200 percent font size, TalkBack descriptions on the ring, chip and disabled button.
 
 ## 2. Project Structure / Approaches
@@ -139,7 +139,7 @@ To show the real map, create a key with the Maps SDK for Android enabled, then a
 MAPS_API_KEY=<your key>
 ```
 
-Rebuild after changing it. `local.defaults.properties` holds only the placeholder `YOUR_KEY_HERE`. Restrict the key in Google Cloud to the package `com.monir.preciseattendance` and your signing certificate. A Maps key is written into the APK's manifest, so an APK built with a real key contains it. Build any APK you intend to share without a key, or with a restricted one.
+Rebuild after changing it. `local.defaults.properties` holds only the placeholder `YOUR_KEY_HERE`. Restrict the key in Google Cloud to the package `com.monir.preciseattendance` and your signing certificates. Add the SHA-1 of every certificate you run with (the debug key and your release keystore are different); a certificate that is not listed gets a blank grey map and an authorisation error in logcat. A Maps key is written into the APK's manifest, so an APK built with a real key contains it. Build any APK you intend to share without a key, or with a restricted one.
 
 ### Run the debug build
 
