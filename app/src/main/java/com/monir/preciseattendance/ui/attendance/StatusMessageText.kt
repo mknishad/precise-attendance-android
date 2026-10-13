@@ -3,9 +3,6 @@ package com.monir.preciseattendance.ui.attendance
 import android.content.res.Resources
 import com.monir.preciseattendance.R
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-
-private val timeFormat = DateTimeFormatter.ofPattern("HH:mm")
 
 /** Maps a [StatusMessage] to its string resource. Exhaustive, so a new message cannot be forgotten. */
 fun Resources.statusText(message: StatusMessage): String = when (message) {
@@ -20,7 +17,7 @@ fun Resources.statusText(message: StatusMessage): String = when (message) {
     StatusMessage.LocationUnavailable -> getString(R.string.status_location_unavailable)
     is StatusMessage.OutOfRange -> getString(R.string.status_out_of_range, message.distanceMeters)
     is StatusMessage.InRange -> getString(R.string.status_in_range, message.distanceMeters)
-    is StatusMessage.OutsideWindow -> getString(R.string.status_outside_window, message.start.hhmm(), message.end.hhmm())
+    is StatusMessage.OutsideWindow -> getString(R.string.status_outside_window, formatTime(message.start), formatTime(message.end))
     StatusMessage.AlreadyMarkedToday -> getString(R.string.status_already_marked_today)
     StatusMessage.OfficeSaved -> getString(R.string.status_office_saved)
     StatusMessage.LocationTimedOut -> getString(R.string.status_location_timed_out)
@@ -36,4 +33,4 @@ fun Resources.statusText(message: StatusMessage): String = when (message) {
 private fun Resources.accuracyText(accuracyMeters: Int?, withValue: Int, withoutValue: Int): String =
     if (accuracyMeters != null) getString(withValue, accuracyMeters) else getString(withoutValue)
 
-private fun LocalTime.hhmm(): String = format(timeFormat)
+private fun Resources.formatTime(time: LocalTime): String = formatLocalTime(time, configuration.locales[0])

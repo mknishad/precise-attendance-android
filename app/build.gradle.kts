@@ -26,6 +26,24 @@ val mapsApiKey: Provider<String> =
             local.ifBlank { default }
         }
 
+/**
+ * One release-signing value, from [propertyName] in keystore.properties (gitignored) or, if that is
+ * blank, from the [environmentName] environment variable. Never committed.
+ */
+fun signingValue(propertyName: String, environmentName: String): String =
+    rootProperty("keystore.properties", propertyName)
+        .zip(providers.environmentVariable(environmentName).orElse("")) { fromFile, fromEnvironment ->
+            fromFile.ifBlank { fromEnvironment }
+        }
+        .get()
+
+val releaseStoreFile = signingValue("storeFile", "RELEASE_STORE_FILE")
+val releaseStorePassword = signingValue("storePassword", "RELEASE_STORE_PASSWORD")
+val releaseKeyAlias = signingValue("keyAlias", "RELEASE_KEY_ALIAS")
+val releaseKeyPassword = signingValue("keyPassword", "RELEASE_KEY_PASSWORD")
+val hasReleaseSigning = listOf(releaseStoreFile, releaseStorePassword, releaseKeyAlias, releaseKeyPassword)
+    .all { it.isNotBlank() } && rootProject.file(releaseStoreFile).isFile
+
 android {
     namespace = "com.monir.preciseattendance"
     compileSdk {
@@ -37,17 +55,32 @@ android {
         minSdk = 26
         targetSdk = 37
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = rootProject.file(releaseStoreFile)
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         release {
+            // Turns on R8 code shrinking, obfuscation and optimised resource shrinking for the whole
+            // app. Extra keep rules, if ever needed, go in src/main/keepRules/rules.keep.
             optimization {
                 enable = true
-                packageScope = setOf("androidx.**", "kotlin.**", "kotlinx.**")
             }
+            // Without a keystore the release still builds, signed with the debug key, so a reviewer
+            // can install it. Such a build must not be distributed.
+            signingConfig = signingConfigs.getByName(if (hasReleaseSigning) "release" else "debug")
         }
     }
     compileOptions {
@@ -57,6 +90,19 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+}
+
+if (!hasReleaseSigning) {
+    tasks.configureEach {
+        if (name == "packageRelease") {
+            doFirst {
+                logger.warn(
+                    "WARNING: no release keystore configured (keystore.properties or RELEASE_* environment " +
+                        "variables). The release APK is signed with the DEBUG key. Do not distribute it.",
+                )
+            }
+        }
     }
 }
 
@@ -82,7 +128,6 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
 
     implementation(libs.hilt.android)
