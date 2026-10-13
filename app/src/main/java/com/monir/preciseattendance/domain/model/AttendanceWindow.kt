@@ -1,6 +1,7 @@
 package com.monir.preciseattendance.domain.model
 
 import java.time.Clock
+import java.time.Duration
 import java.time.LocalTime
 
 /**
@@ -21,6 +22,19 @@ data class AttendanceWindow(
 
     /** Whether the clock's current local time falls inside the window. */
     fun isOpen(clock: Clock): Boolean = LocalTime.now(clock) in this
+
+    /**
+     * Milliseconds from [now] until the window next opens or closes today, or null if neither is
+     * still to come. The close is reported just after [end], the first instant outside the window.
+     */
+    fun millisUntilNextChange(now: LocalTime): Long? {
+        val untilOpen = Duration.between(now, start)
+        val untilClose = Duration.between(now, end).plusMillis(1)
+        return listOf(untilOpen, untilClose)
+            .filter { !it.isNegative && !it.isZero }
+            .minOrNull()
+            ?.toMillis()
+    }
 
     companion object {
         val DEFAULT_START: LocalTime = LocalTime.of(9, 0)

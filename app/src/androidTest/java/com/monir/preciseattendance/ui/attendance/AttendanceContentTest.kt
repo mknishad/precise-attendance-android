@@ -13,10 +13,10 @@ class AttendanceContentTest {
     val composeRule = createComposeRule()
 
     @Test
-    fun markAttendance_isDisabledInScaffold() {
+    fun markAttendance_isDisabledInDefaultState() {
         composeRule.setContent {
             AttendanceTheme {
-                AttendanceContent(state = AttendanceUiState(), onIntent = {})
+                AttendanceContent(state = AttendanceUiState(), actions = AttendanceActions())
             }
         }
 

@@ -1,5 +1,6 @@
 package com.monir.preciseattendance.fakes
 
+import com.monir.preciseattendance.domain.geo.HaversineDistanceCalculator
 import com.monir.preciseattendance.domain.model.GeoPoint
 import com.monir.preciseattendance.domain.model.LocationFix
 import com.monir.preciseattendance.domain.model.OfficeLocation
@@ -23,3 +24,7 @@ fun testFix(
 /** A local date-time in [TEST_ZONE] as an instant, so tests can state times as the user sees them. */
 fun melbourneInstant(date: String, time: String): Instant =
     java.time.LocalDateTime.parse("${date}T$time").atZone(TEST_ZONE).toInstant()
+
+/** A point [meters] due north of [from]; along a meridian the haversine distance is exact. */
+fun pointNorthOf(from: GeoPoint, meters: Double): GeoPoint =
+    GeoPoint(from.latitude + Math.toDegrees(meters / HaversineDistanceCalculator.EARTH_RADIUS_METERS), from.longitude)

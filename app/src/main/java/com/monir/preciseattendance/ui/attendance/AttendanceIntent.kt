@@ -1,13 +1,11 @@
 package com.monir.preciseattendance.ui.attendance
 
-/** User actions and system callbacks the screen sends to the ViewModel. */
+/** Everything the screen can ask of the ViewModel: user actions and system callbacks. */
 sealed interface AttendanceIntent {
+    /** The latest permission state, after a request and whenever the screen resumes. */
+    data class PermissionResult(val state: LocationPermissionState) : AttendanceIntent
     data object SetOfficeLocationClicked : AttendanceIntent
     data object MarkAttendanceClicked : AttendanceIntent
-    data object OpenAppSettingsClicked : AttendanceIntent
-    data object OpenLocationSettingsClicked : AttendanceIntent
-    data class PermissionResult(
-        val granted: Boolean,
-        val permanentlyDenied: Boolean,
-    ) : AttendanceIntent
+    data class LocationSettingsResolved(val success: Boolean) : AttendanceIntent
+    data object OpenSettingsClicked : AttendanceIntent
 }

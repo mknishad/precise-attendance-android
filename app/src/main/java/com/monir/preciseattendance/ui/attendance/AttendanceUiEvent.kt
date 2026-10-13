@@ -1,11 +1,11 @@
 package com.monir.preciseattendance.ui.attendance
 
-import androidx.annotation.StringRes
-
-/** One-off effects (consumed once, not part of [AttendanceUiState]). */
+/** One-off effects, consumed once and kept out of [AttendanceUiState]. */
 sealed interface AttendanceUiEvent {
-    data class ShowMessage(@StringRes val messageRes: Int) : AttendanceUiEvent
-    data object RequestLocationPermission : AttendanceUiEvent
+    data class ShowMessage(val message: StatusMessage) : AttendanceUiEvent
+
+    /** Ask the UI to check location settings and show the system "turn on location" prompt. */
+    data object RequestLocationSettingsResolution : AttendanceUiEvent
     data object OpenAppSettings : AttendanceUiEvent
-    data object OpenLocationSettings : AttendanceUiEvent
+    data object AttendanceMarked : AttendanceUiEvent
 }

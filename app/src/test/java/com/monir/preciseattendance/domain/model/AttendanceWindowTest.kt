@@ -7,6 +7,7 @@ import java.time.LocalTime
 import java.time.ZoneOffset
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -73,5 +74,25 @@ class AttendanceWindowTest {
         val instant = melbourneInstant("2026-10-15", "10:30:00")
         assertTrue(window.isOpen(Clock.fixed(instant, TEST_ZONE)))
         assertFalse(window.isOpen(Clock.fixed(instant, ZoneOffset.UTC)))
+    }
+
+    @Test
+    fun millisUntilNextChange_beforeOpening_isTheTimeToOpen() {
+        assertEquals(30_000L, window.millisUntilNextChange(LocalTime.of(8, 59, 30)))
+    }
+
+    @Test
+    fun millisUntilNextChange_insideTheWindow_isTheTimeJustPastTheEnd() {
+        assertEquals(60_001L, window.millisUntilNextChange(LocalTime.of(10, 29, 0)))
+    }
+
+    @Test
+    fun millisUntilNextChange_afterTheWindow_isNull() {
+        assertNull(window.millisUntilNextChange(LocalTime.of(10, 31)))
+    }
+
+    @Test
+    fun millisUntilNextChange_exactlyAtOpening_looksAheadToTheClose() {
+        assertEquals(90 * 60_000L + 1, window.millisUntilNextChange(LocalTime.of(9, 0)))
     }
 }
