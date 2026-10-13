@@ -76,7 +76,8 @@ class AttendanceViewModel @Inject constructor(
                     isMarkingAttendance = progress.marking,
                     attendanceWindow = window,
                     isWithinWindow = schedule.withinWindow,
-                    alreadyMarkedToday = schedule.alreadyMarked,
+                    alreadyMarkedToday = schedule.markedAtMillis != null,
+                    markedAtMillis = schedule.markedAtMillis,
                 )
             }
         }
@@ -165,7 +166,8 @@ class AttendanceViewModel @Inject constructor(
 
     private fun scheduleAt(lastMarkedAtMillis: Long?, tick: Unit): Schedule = Schedule(
         withinWindow = window.isOpen(clock),
-        alreadyMarked = attendanceStatusFor(lastMarkedAtMillis, clock) is AttendanceStatus.Marked,
+        markedAtMillis = (attendanceStatusFor(lastMarkedAtMillis, clock) as? AttendanceStatus.Marked)
+            ?.markedAtEpochMillis,
     )
 
     private fun emit(event: AttendanceUiEvent) {
@@ -174,7 +176,7 @@ class AttendanceViewModel @Inject constructor(
 
     private data class DeviceState(val permission: LocationPermissionState, val locationEnabled: Boolean)
     private data class ActionProgress(val settingOffice: Boolean, val marking: Boolean)
-    private data class Schedule(val withinWindow: Boolean, val alreadyMarked: Boolean)
+    private data class Schedule(val withinWindow: Boolean, val markedAtMillis: Long?)
 
     private companion object {
         const val STOP_TIMEOUT_MILLIS = 5_000L

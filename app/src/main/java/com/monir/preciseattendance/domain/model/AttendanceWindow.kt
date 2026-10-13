@@ -38,6 +38,6 @@ data class AttendanceWindow(
 
     companion object {
         val DEFAULT_START: LocalTime = LocalTime.of(9, 0)
-        val DEFAULT_END: LocalTime = LocalTime.of(10, 30)
+        val DEFAULT_END: LocalTime = LocalTime.of(23, 30)
     }
 }

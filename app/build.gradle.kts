@@ -1,3 +1,4 @@
+import com.android.build.api.variant.BuildConfigField
 import java.io.StringReader
 import java.util.Properties
 
@@ -50,17 +51,27 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
 androidComponents {
     onVariants { variant ->
         variant.manifestPlaceholders.put("MAPS_API_KEY", mapsApiKey)
+        // Only whether a real key exists. The key itself must never be written to BuildConfig.
+        // "YOUR_KEY_HERE" is the placeholder committed in local.defaults.properties. It is a literal
+        // because a lambda that captures a script-level value cannot be cached by Gradle.
+        variant.buildConfigFields?.put(
+            "MAPS_KEY_AVAILABLE",
+            mapsApiKey.map { key ->
+                BuildConfigField("boolean", (key.isNotBlank() && key != "YOUR_KEY_HERE").toString(), "True when a Maps API key was supplied")
+            },
+        )
     }
 }
 

@@ -26,6 +26,8 @@ data class AttendanceUiState(
     val attendanceWindow: AttendanceWindow = AttendanceWindow(),
     val isWithinWindow: Boolean = false,
     val alreadyMarkedToday: Boolean = false,
+    /** When attendance was marked today, for display; null if it has not been. */
+    val markedAtMillis: Long? = null,
 ) {
     /** Metres to the office when there is a trustworthy, finite measurement; otherwise null. */
     val distanceMeters: Double?
@@ -34,6 +36,14 @@ data class AttendanceUiState(
             is ProximityResult.OutOfRange -> result.distanceMeters
             else -> null
         }?.takeIf { it.isFinite() }
+
+    /** The distance as shown to the user, in whole metres, consistent with [statusMessage]. */
+    val displayDistanceMeters: Int?
+        get() = when (val result = proximity) {
+            is ProximityResult.InRange -> inRangeDisplayMeters(result.distanceMeters)
+            is ProximityResult.OutOfRange -> outOfRangeDisplayMeters(result.distanceMeters)
+            else -> null
+        }
 
     val distanceProgress: Float
         get() = distanceProgressFor(distanceMeters)

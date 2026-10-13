@@ -26,17 +26,24 @@ internal fun AttendanceUiState.resolveStatusMessage(): StatusMessage {
 private fun AttendanceUiState.inRangeMessage(): StatusMessage = when {
     alreadyMarkedToday -> StatusMessage.AlreadyMarkedToday
     !isWithinWindow -> StatusMessage.OutsideWindow(attendanceWindow.start, attendanceWindow.end)
-    else -> distanceMeters?.let { StatusMessage.InRange(it.roundToWholeMeters()) } ?: StatusMessage.LocationUnavailable
+    else -> displayDistanceMeters?.let(StatusMessage::InRange) ?: StatusMessage.LocationUnavailable
 }
 
 /**
  * Distances are rounded to the nearest metre, except that an out-of-range distance never shows as
  * inside the limit: 50.1 m reads as 51 m, so the text cannot contradict the disabled button.
  */
-internal fun outOfRangeMessage(distanceMeters: Double): StatusMessage {
-    if (!distanceMeters.isFinite()) return StatusMessage.LocationUnavailable
+internal fun outOfRangeMessage(distanceMeters: Double): StatusMessage =
+    outOfRangeDisplayMeters(distanceMeters)?.let(StatusMessage::OutOfRange) ?: StatusMessage.LocationUnavailable
+
+/** Whole metres for display, or null when the distance is not a finite number. */
+internal fun inRangeDisplayMeters(distanceMeters: Double): Int? =
+    distanceMeters.takeIf { it.isFinite() }?.roundToWholeMeters()
+
+/** Like [inRangeDisplayMeters], but never at or below the allowed radius. */
+internal fun outOfRangeDisplayMeters(distanceMeters: Double): Int? {
     val firstOutsideMeters = floor(AttendancePolicy.ALLOWED_RADIUS_METERS).toInt() + 1
-    return StatusMessage.OutOfRange(max(distanceMeters.roundToWholeMeters(), firstOutsideMeters))
+    return inRangeDisplayMeters(distanceMeters)?.let { max(it, firstOutsideMeters) }
 }
 
 /** The message explaining why precise location is not available, or null when it is. */

@@ -227,6 +227,27 @@ class AttendanceViewModelStateTest {
     }
 
     @Test
+    fun markedToday_exposesWhenItWasMarked() = runTest {
+        val markedAt = melbourneInstant("2026-10-15", "09:05:00").toEpochMilli()
+        fixture.attendance.lastMarkedAtMillis.value = markedAt
+        val viewModel = fixture.createViewModel()
+
+        keepStateActive(viewModel)
+
+        assertEquals(markedAt, viewModel.state.value.markedAtMillis)
+    }
+
+    @Test
+    fun notMarkedToday_hasNoMarkedTime() = runTest {
+        fixture.attendance.lastMarkedAtMillis.value = melbourneInstant("2026-10-14", "09:05:00").toEpochMilli()
+        val viewModel = fixture.createViewModel()
+
+        keepStateActive(viewModel)
+
+        assertNull(viewModel.state.value.markedAtMillis)
+    }
+
+    @Test
     fun attendanceMarkedYesterday_doesNotCountAsToday() = runTest {
         fixture.attendance.lastMarkedAtMillis.value = melbourneInstant("2026-10-14", "09:05:00").toEpochMilli()
         val viewModel = fixture.createViewModel()
