@@ -32,7 +32,6 @@ App summary: a single-screen "Geo-Fenced Attendance" app. The user taps "Set Off
 4. Housekeeping
 - .gitignore covering local.properties, keystores (*.jks, *.keystore), build outputs and IDE files.
 - A README.md skeleton with these headings: Project Title and Description, Project Structure / Approaches, Generative AI Usage, How to Run (include the Maps key setup), Screenshots. Leave bodies as TODO.
-- A PROMPTS.md file with a single entry containing this prompt.
 
 5. Verification
 - Run ./gradlew assembleDebug and ./gradlew testDebugUnitTest and fix any errors.

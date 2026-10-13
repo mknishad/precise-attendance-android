@@ -1,15 +1,20 @@
 package com.monir.preciseattendance.domain.repository
 
-import com.monir.preciseattendance.domain.model.GeoPoint
+import com.monir.preciseattendance.domain.model.FixResult
+import com.monir.preciseattendance.domain.model.LocationFix
 import kotlinx.coroutines.flow.Flow
 
 interface LocationRepository {
-    /** Live high-accuracy location updates; active only while collected. */
-    fun observeLocation(): Flow<GeoPoint>
+    /**
+     * Live high-accuracy fixes; the provider is active only while the flow is collected.
+     * If updates cannot start or stop, the flow terminates with a
+     * [com.monir.preciseattendance.domain.model.LocationException] carrying the reason.
+     */
+    fun locationUpdates(): Flow<LocationFix>
 
-    /** Emits whether device location services (GPS) are switched on. */
-    fun observeLocationServicesEnabled(): Flow<Boolean>
+    /** A fresh one-shot fix, used for "Set Office Location" and at the moment of marking. */
+    suspend fun getCurrentLocation(): FixResult
 
-    /** One-shot fix, used when saving the office location. */
-    suspend fun getCurrentLocation(): GeoPoint
+    /** Emits whether device location services are on, and again whenever that changes. */
+    fun isLocationEnabled(): Flow<Boolean>
 }

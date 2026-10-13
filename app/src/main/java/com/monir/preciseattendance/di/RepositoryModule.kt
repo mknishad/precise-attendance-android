@@ -1,6 +1,6 @@
 package com.monir.preciseattendance.di
 
-import com.monir.preciseattendance.data.location.LocationRepositoryImpl
+import com.monir.preciseattendance.data.location.FusedLocationRepository
 import com.monir.preciseattendance.data.repository.AttendanceRepositoryImpl
 import com.monir.preciseattendance.data.repository.OfficeLocationRepositoryImpl
 import com.monir.preciseattendance.domain.repository.AttendanceRepository
@@ -16,7 +16,7 @@ import dagger.hilt.components.SingletonComponent
 abstract class RepositoryModule {
 
     @Binds
-    abstract fun bindLocationRepository(impl: LocationRepositoryImpl): LocationRepository
+    abstract fun bindLocationRepository(impl: FusedLocationRepository): LocationRepository
 
     @Binds
     abstract fun bindOfficeLocationRepository(impl: OfficeLocationRepositoryImpl): OfficeLocationRepository
