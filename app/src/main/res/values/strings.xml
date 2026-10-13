@@ -1,3 +1,6 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Geo-Fenced Attendance</string>
+    <string name="attendance_title">Attendance</string>
+    <string name="set_office_location">Set Office Location</string>
+    <string name="mark_attendance">Mark Attendance</string>
 </resources>

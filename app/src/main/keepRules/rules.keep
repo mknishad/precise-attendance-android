@@ -1,12 +1,9 @@
-# Add project specific R8 rules here.
-# AGP will combine all keep rule files in src/main/keepRules to pass to R8
+# Project specific R8 rules. AGP combines all keep rule files in src/main/keepRules.
+# Hilt, DataStore, Play Services and Maps Compose ship their own consumer rules.
 #
 # For more details, see
 #   https://d.android.com/r/tools/r8/keep-rules
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Keep readable stack traces for crash reports; the mapping file de-obfuscates them.
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
