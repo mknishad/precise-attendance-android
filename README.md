@@ -109,7 +109,7 @@ The AI did not test on a physical device.
 
 ### What I verified or changed myself
 
-I conducted making the architecture decision. Tested the app on a Pixel 8 (API 37) and on a Pixel 5a (API 34) and the UI and functionality is working properly. Tweaked some of the UI by hand and removed some unnecessary components. Ran the tests and verified that they pass.
+I conducted making the architecture decision and reviewed the generated code. Tested the app on a Pixel 8 (API 37) and on a Pixel 5a (API 34) and the UI and functionality is working properly. Tweaked some of the UI by hand and removed some unnecessary components. Ran the tests and verified that they pass.
 
 ## 4. How to Run
 
