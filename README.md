@@ -161,7 +161,7 @@ The APK is written to `app/build/outputs/apk/release/app-release.apk`. R8 shrink
 
 To sign with your own key, copy `keystore.properties.example` to `keystore.properties` (gitignored) and fill in the values, or set the environment variables `RELEASE_STORE_FILE`, `RELEASE_STORE_PASSWORD`, `RELEASE_KEY_ALIAS` and `RELEASE_KEY_PASSWORD`. If neither is present, the release build still succeeds but is signed with the Android debug key and Gradle prints a warning. That APK can be installed for review but must not be distributed as a real release. Never commit a keystore or its passwords.
 
-Release APK download: https://drive.google.com/file/d/1_GxKJxqD5XVQd8iCbVrFepSN_ObUypSB/view?usp=share_link
+Release APK download: [precise-attendance-android](https://drive.google.com/file/d/1_GxKJxqD5XVQd8iCbVrFepSN_ObUypSB/view?usp=share_link)
 
 ### Run the tests
 
